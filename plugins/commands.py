@@ -52,7 +52,7 @@ async def start(client, message):
         await client.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(message.from_user.id, message.from_user.mention))
     if len(message.command) != 2:
         buttons = [[
-                    InlineKeyboardButton('🔰 Update Channel  🔰', url=f"https://t.me/mxmoder'')
+                    InlineKeyboardButton('🔰 Update Channel  🔰', url="https://t.me/mxmoder")
                 ]]
         reply_markup = InlineKeyboardMarkup(buttons)
         current_time = datetime.now(pytz.timezone(TIMEZONE))
