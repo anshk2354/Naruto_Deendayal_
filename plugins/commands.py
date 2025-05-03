@@ -78,7 +78,7 @@ async def start(client, message):
 
     if len(message.command) == 2 and message.command[1] in ["subscribe", "error", "okay", "help"]:
         buttons = [[
-                    InlineKeyboardButton('🔰 Update Channel  🔰', url=f"https://t.me/mxmoder'')
+                    InlineKeyboardButton('🔰 Update Channel  🔰', url="https://t.me/mxmoder")
                 ]]
         reply_markup = InlineKeyboardMarkup(buttons)
         current_time = datetime.now(pytz.timezone(TIMEZONE))
