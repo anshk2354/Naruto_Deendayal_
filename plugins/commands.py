@@ -184,11 +184,7 @@ async def start(client, message):
                     reply_markup=reply_markup,
                     parse_mode=enums.ParseMode.HTML
                 )
-                return
-                if message.text and message.text.startswith("/start"):
-    if "_" in message.text:
-        cmd, file_id = message.text.split("_", 1)
-
+                
         # Force subscribe check for special file link
         if not await db.has_premium_access(message.from_user.id):
             channels = (await get_settings(int(message.from_user.id))).get('fsub')
