@@ -155,7 +155,8 @@ async def start(client, message):
         )
         return  
         if len(message.command) == 2 and message.command[1].startswith('getfile'):
-        movies = message.command[1].split("-", 1)[1] 
+        if something:
+        movies = message.command[1].split("-", 1)[1]  # Proper indentation
         movie = movies.replace('-',' ')
         message.text = movie 
         await auto_filter(client, message) 
