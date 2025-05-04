@@ -154,9 +154,8 @@ async def start(client, message):
             parse_mode=enums.ParseMode.HTML
         )
         return  
-        if len(message.command) == 2 and message.command[1].startswith('getfile'):
-        if something:
-        movies = message.command[1].split("-", 1)[1]  # Proper indentation
+    if len(message.command) == 2 and message.command[1].startswith('getfile'):
+        movies = message.command[1].split("-", 1)[1] 
         movie = movies.replace('-',' ')
         message.text = movie 
         await auto_filter(client, message) 
