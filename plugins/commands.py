@@ -154,60 +154,33 @@ async def start(client, message):
             parse_mode=enums.ParseMode.HTML
         )
         return  
-    if len(message.command) == 2 and message.command[1].startswith('getfile'):
-        movies = message.command[1].split("-", 1)[1] 
-        movie = movies.replace('-',' ')
-        message.text = movie 
-        await auto_filter(client, message) 
-        return
-    
-    if not await db.has_premium_access(message.from_user.id):
-        channels = (await get_settings(int(message.from_user.id))).get('fsub')
-        if channels:  
-            btn = await is_subscribed(client, message, channels)
-            if btn:
+        if AUTH_CHANNEL and not await is_subscribed(client, message):
+        try:
+            invite_link = await client.create_chat_invite_link(int(AUTH_CHANNEL))
+        except ChatAdminRequired:
+            logger.error("Make sure Bot is admin in Forcesub channel")
+            return
+        btn = [
+            [
+                InlineKeyboardButton("❆ Jᴏɪɴ Oᴜʀ Cʜᴀɴɴᴇʟ ❆", url=invite_link.invite_link)
+            ],[
+                InlineKeyboardButton('🤔 Why Iam Join🤔', callback_data='sinfo')
+            ]
+        ]
+
+        if message.command[1] != "subscribe":
+            try:
                 kk, file_id = message.command[1].split("_", 1)
-                btn.append([InlineKeyboardButton("♻️ ᴛʀʏ ᴀɢᴀɪɴ ♻️", callback_data=f"checksub#{kk}#{file_id}")])
-                reply_markup = InlineKeyboardMarkup(btn)
-                caption = (
-                    f"👋 Hello {message.from_user.mention}\n\n"
-                    "You have not joined all our *Updates Channels* yet.\n"
-                    "Please click the *Join Updates Channels* buttons below and ensure that you join *all* the listed channels.\n"
-                    "After that, please try again.\n\n"
-                    "आपने हमारे *सभी Updates Channels* को जॉइन नहीं किया है।\n"
-                    "कृपया *Join Updates Channels* बटन पर क्लिक करें और सुनिश्चित करें कि आपने *सभी चैनल्स* को जॉइन किया है।\n"
-                    "इसके बाद, कृपया फिर से प्रयास करें।"
-                )
-                await message.reply_photo(
-                    photo=random.choice(FSUB_PICS),
-                    caption=caption,
-                    reply_markup=reply_markup,
-                    parse_mode=enums.ParseMode.HTML
-                )
-                
-        # Force subscribe check for special file link
-        if not await db.has_premium_access(message.from_user.id):
-            channels = (await get_settings(int(message.from_user.id))).get('fsub')
-            if channels:
-                btn = await is_subscribed(client, message, channels)
-                if btn:
-                    btn.append([InlineKeyboardButton("♻️ ᴛʀʏ ᴀɢᴀɪɴ ♻️", callback_data=f"checksub#link#{file_id}")])
-                    reply_markup = InlineKeyboardMarkup(btn)
-                    caption = (
-                        f"👋 Hello {message.from_user.mention}\n\n"
-                        "You have not joined all our *Updates Channels* yet.\n"
-                        "Please click the *Join Updates Channels* buttons below and ensure that you join *all* the listed channels.\n"
-                        "After that, please try again.\n\n"
-                        "आपने हमारे *सभी Updates Channels* को जॉइन नहीं किया है।\n"
-                        "कृपया *Join Updates Channels* बटन पर क्लिक करें और सुनिश्चित करें कि आपने *सभी चैनल्स* को जॉइन किया है।\n"
-                        "इसके बाद, कृपया फिर से प्रयास करें।"
-                    )
-                    await message.reply_photo(
-                        photo=random.choice(FSUB_PICS),
-                        caption=caption,
-                        reply_markup=reply_markup,
-                        parse_mode=enums.ParseMode.HTML
-                    )
+                btn.append([InlineKeyboardButton("↻ Tʀʏ Aɢᴀɪɴ", callback_data=f"checksub#{kk}#{file_id}")])
+            except (IndexError, ValueError):
+                btn.append([InlineKeyboardButton("↻ Tʀʏ Aɢᴀɪɴ", url=f"https://t.me/{temp.U_NAME}?start={message.command[1]}")])
+        await client.send_photo(
+            chat_id=message.from_user.id,
+            photo="https://telegra.ph/file/20b4aaaddb8aba646e53c.jpg",
+            caption="**You are not in our channel given below so you don't get the movie file...\n\nIf you want the movie file, click on the '🍿ᴊᴏɪɴ ᴏᴜʀ ʙᴀᴄᴋ-ᴜᴘ ᴄʜᴀɴɴᴇʟ🍿' button below and join our back-up channel, then click on the '🔄 Try Again' button below...\n\nThen you will get the movie files...**",
+            reply_markup=InlineKeyboardMarkup(btn),
+            parse_mode=enums.ParseMode.MARKDOWN
+            )
                     return
             
     data = message.command[1]
